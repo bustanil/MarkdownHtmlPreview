@@ -1,84 +1,72 @@
-Markdown HTML Preview for Sublime Text 2/3
-==========================================
+# Markdown HTML Preview
 
-Purpose
--------
+Render the current Markdown buffer as HTML and open it in your default browser.
 
-I love markdown and I use it for almost everything that's text-based. This plugin allows you
-to automatically inject your markdown document into an HTML page, some CSS and JavaScript
-magic allows you to view your document in your web browser.
+This fork of [zeyon/MarkdownHtmlPreview](https://github.com/zeyon/MarkdownHtmlPreview) includes a reading layout:
 
-I prefer this method, since it allows me to use different HTML templates for different purposes,
-e.g. a template for printing/PDF or some other template to upload a document to the web.
+- A centered column with a maximum width of 760 px.
+- An 18 px system font with a line height of 1.75.
+- A dim, warm gray background (`#eeede9`).
+- Muted backgrounds for code blocks and tables.
+- Horizontal scrolling for wide code blocks and tables.
+- A layout that fits small screens.
+- A white background for printing.
 
+The style is embedded in the generated HTML. It does not need a separate installed stylesheet or network requests.
 
-Installation
-------------
+## Install the fork
 
-### Installation via Sublime Package Control ###
+1. In Sublime Text, select **Preferences > Browse Packages**.
+2. Quit Sublime Text.
+3. If that folder already contains `Markdown HTML Preview`, move it outside the Packages folder as a backup. This includes any local style overrides you installed previously.
+4. Clone this fork into a folder named `Markdown HTML Preview` inside Packages:
 
-1. Install the Sublime Package Control package: <https://sublime.wbond.net/installation>
-2. Use Package Control to install this package (Markdown HTML Preview)
+   ```sh
+   git clone https://github.com/bustanil/MarkdownHtmlPreview.git "Markdown HTML Preview"
+   ```
 
+5. Start Sublime Text.
 
-### Manual installation ###
+Loose package files take priority over the original installed package archive. Keep the Git checkout to update the fork with `git pull`. Package Control updates to the original archive do not update this fork.
 
-Clone the repostiory into your [Package Directory](http://sublimetext.info/docs/en/basic_concepts.html)
+## Use the preview
 
-Make sure you name the directory `Markdown HTML Preview`
+Open a Markdown file. Open the command palette and run **Markdown HTML Preview**. The default shortcut is **Ctrl+Shift+M**.
 
+Each command creates a new temporary HTML file and opens your default browser. Regenerate the preview after editing Markdown or changing the style. Refreshing an existing HTML page does not rebuild it.
 
-Usage
------
+## Change the style
 
-Install the plugin an use the following shortcut to preview the file:
+Edit the reading layout in `src/main.css`. Change `--reading-width` to adjust the column width and `--reading-background` to adjust the page color.
 
-	ctrl+shift+m
+Rebuild the bundled preview with Python 3:
 
-You can of course alter the key bindings in your Sublime Text settings.
+```sh
+python3 scripts/build_reading_style.py
+```
 
+This command updates:
 
-Template
---------
+- `dist/md.css`
+- `dist/index.html`
+- `MarkdownHtmlPreview.py`
 
-You can easily change and update the styles and layout of your HTML template.
-Simply edit the code in the `<packagedir>/src/` directory and use Gulp to
-create a new distribution file.
+The script preserves the existing bundled GitHub Markdown CSS and JavaScript renderer. It does not rebuild JavaScript from `src/main.js`. The upstream Gulp/Bower build files remain available for renderer changes.
 
-1. Download and install [node.js](http://nodejs.org/)
+Run the checks with:
 
-2. Open a shell in the plugin directory and install dependencies:
+```sh
+python3 -m unittest discover -s tests
+```
 
-	npm install
-	npm install -g bower
-	bower install
+## Compatibility
 
-3. Edit your template (`./src/index.html`, `./src/main.css` and `./src/main.js`)
+The upstream plugin targets Sublime Text 2/3. The approved reading style was verified through a local override in Sublime Text 4 on macOS and in Firefox. This fork's generated files pass local rendering-command and build-consistency checks. A fresh installation of the fork, Sublime Text 2, and other operating systems have not been verified.
 
-4. Re-build the template by running `gulp`
+Relative links and images still use the temporary HTML file's directory. This fork changes the reading style and retains the upstream rendering behavior.
 
+## License
 
-License
--------
+The upstream MIT license applies. See `LICENSE`.
 
-Developed with love @ [Zeyon](http://www.zeyos.com) in Munich, Germany.
-
-Copyright (c) 2014 Peter-Christoph Haider
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+Copyright (c) 2014 Peter-Christoph Haider.
